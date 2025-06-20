@@ -104,7 +104,7 @@ MIT
 
 ## 作者
 
-Your Name
+Soichiro Urita
 
 ## 謝辞
 
