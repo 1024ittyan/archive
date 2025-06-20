@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}カレンダーイベント一覧{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <div class="card shadow border-0">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>カレンダーイベント一覧</h4>
+      </div>
+      <div class="card-body p-4">
+        {% if events %}
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            今後のイベント {{ events|length }} 件を表示しています
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 20%">日付</th>
+                  <th style="width: 20%">時間</th>
+                  <th style="width: 30%">タイトル</th>
+                  <th style="width: 20%">場所</th>
+                  <th style="width: 10%">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for event in events %}
+                  <tr>
+                    <td>
+                      {% if event.start.dateTime %}
+                        {{ event.start.dateTime|replace('T', ' ')|replace(':00+09:00', '')|replace(':00Z', '')|replace('-', '/')|truncate(10, True, '') }}
+                      {% else %}
+                        {{ event.start.date|replace('-', '/') }}
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if event.start.dateTime %}
+                        {{ event.start.dateTime|replace('T', ' ')|replace(':00+09:00', '')|replace(':00Z', '')|truncate(16, False, '')|replace(event.start.dateTime|replace('T', ' ')|replace(':00+09:00', '')|replace(':00Z', '')|truncate(10, True, ''), '') }}
+                        -
+                        {{ event.end.dateTime|replace('T', ' ')|replace(':00+09:00', '')|replace(':00Z', '')|truncate(16, False, '')|replace(event.end.dateTime|replace('T', ' ')|replace(':00+09:00', '')|replace(':00Z', '')|truncate(10, True, ''), '') }}
+                      {% else %}
+                        終日
+                      {% endif %}
+                    </td>
+                    <td>{{ event.summary }}</td>
+                    <td>{{ event.location or '-' }}</td>
+                    <td>
+                      <a href="{{ event.htmlLink }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="d-flex justify-content-center mt-4">
+            <a href="https://calendar.google.com/" target="_blank" class="btn btn-primary">
+              <i class="fas fa-external-link-alt me-2"></i>Googleカレンダーを開く
+            </a>
+          </div>
+        {% else %}
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            表示できるイベントがありません
+          </div>
+          <div class="text-center mt-4">
+            <a href="{{ url_for('upload_pdf') }}" class="btn btn-primary">
+              <i class="fas fa-upload me-2"></i>シフト表をアップロード
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="card mt-4 shadow border-0">
+      <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>カレンダー情報</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6>現在の設定</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                カレンダー
+                <span class="badge bg-primary rounded-pill">
+                  {% if settings.calendar_id == 'primary' %}
+                    メインカレンダー
+                  {% else %}
+                    {{ settings.calendar_id }}
+                  {% endif %}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                イベントタイトル
+                <span class="badge bg-secondary rounded-pill">{{ settings.event_title }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                検索対象名
+                <span class="badge bg-info rounded-pill">{{ settings.target_name }}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6>操作</h6>
+            <div class="d-grid gap-2">
+              <a href="{{ url_for('settings') }}" class="btn btn-outline-primary">
+                <i class="fas fa-cog me-2"></i>設定を変更
+              </a>
+              <a href="{{ url_for('upload_pdf') }}" class="btn btn-outline-success">
+                <i class="fas fa-upload me-2"></i>新しいシフト表をアップロード
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

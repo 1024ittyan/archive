@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}エラー {{ error_code }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 text-center">
+    <div class="card shadow-lg border-0 rounded-lg mt-5">
+      <div class="card-body p-5">
+        <div class="mb-4">
+          <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+          <h1 class="display-1 fw-bold text-danger">{{ error_code }}</h1>
+          <h2 class="mb-3">{{ message }}</h2>
+          <p class="lead text-muted">申し訳ありませんが、エラーが発生しました。</p>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="d-grid gap-2 col-md-6 mx-auto">
+          <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-home me-2"></i>ホームに戻る
+          </a>
+          {% if 'credentials' in session %}
+          <a href="{{ url_for('upload_pdf') }}" class="btn btn-outline-primary">
+            <i class="fas fa-upload me-2"></i>PDFアップロードへ
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-4 text-muted">
+      <p>
+        <small>
+          問題が解決しない場合は、以下をお試しください：
+        </small>
+      </p>
+      <ul class="list-unstyled">
+        <li><small>ブラウザをリフレッシュする</small></li>
+        <li><small>再度ログインする</small></li>
+        <li><small>別のPDFファイルを試す</small></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %} 

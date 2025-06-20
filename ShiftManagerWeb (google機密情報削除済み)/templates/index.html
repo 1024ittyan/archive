@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}シフト管理アプリ - ホーム{% endblock %}
+
+{% block content %}
+<!-- ヒーローセクション -->
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card glass-effect border-0 shadow-lg rounded-4 overflow-hidden">
+      <div class="card-body p-5 text-center">
+        <div class="mb-5">
+          <div class="position-relative d-inline-block">
+            <i class="fas fa-calendar-alt fa-5x text-gradient mb-4 icon-bounce"></i>
+            <div class="position-absolute top-0 start-100 translate-middle">
+              <span class="badge bg-success rounded-pill">
+                <i class="fas fa-magic"></i> AI
+              </span>
+            </div>
+          </div>
+          <h1 class="display-4 fw-bold text-gradient mb-3">シフト管理アプリ</h1>
+          <p class="lead fs-5 mb-4">PDFのシフト表からGoogleカレンダーに<br class="d-md-none">簡単自動登録</p>
+          <div class="d-flex justify-content-center gap-3 mb-4">
+            <span class="badge bg-primary rounded-pill px-3 py-2">
+              <i class="fas fa-robot me-1"></i>AI解析
+            </span>
+            <span class="badge bg-success rounded-pill px-3 py-2">
+              <i class="fas fa-sync me-1"></i>自動同期
+            </span>
+            <span class="badge bg-info rounded-pill px-3 py-2">
+              <i class="fas fa-mobile-alt me-1"></i>レスポンシブ
+            </span>
+          </div>
+        </div>
+        
+        <hr class="my-5 opacity-25">
+        
+        <!-- 機能紹介カード -->
+        <div class="row g-4 mb-5">
+          <div class="col-md-4">
+            <div class="card h-100 border-0 card-gradient-primary text-white">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="fas fa-file-pdf fa-3x mb-3"></i>
+                </div>
+                <h5 class="fw-bold">PDFアップロード</h5>
+                <p class="mb-0">シフト表のPDFをドラッグ&ドロップするだけで簡単アップロード</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 border-0 card-gradient-success text-white">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="fas fa-brain fa-3x mb-3"></i>
+                </div>
+                <h5 class="fw-bold">AI自動解析</h5>
+                <p class="mb-0">最新のAI技術でシフト情報を正確に抽出・解析</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 border-0 card-gradient-secondary text-white">
+              <div class="card-body text-center p-4">
+                <div class="mb-3">
+                  <i class="fab fa-google fa-3x mb-3"></i>
+                </div>
+                <h5 class="fw-bold">カレンダー連携</h5>
+                <p class="mb-0">Googleカレンダーに自動登録で予定管理が楽々</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- CTA ボタン -->
+        {% if 'credentials' not in session %}
+        <div class="d-grid gap-2 col-md-6 mx-auto">
+          <a href="{{ url_for('authorize') }}" class="btn btn-primary btn-lg rounded-pill shadow-lg">
+            <i class="fab fa-google me-2"></i>
+            <span>今すぐ始める</span>
+            <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+          <small class="text-muted mt-2">
+            <i class="fas fa-shield-alt me-1"></i>
+            安全なGoogleアカウント認証
+          </small>
+        </div>
+        {% else %}
+        <div class="d-grid gap-2 col-md-6 mx-auto">
+          <a href="{{ url_for('upload_pdf') }}" class="btn btn-success btn-lg rounded-pill shadow-lg">
+            <i class="fas fa-upload me-2"></i>
+            <span>PDFをアップロード</span>
+            <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 使い方セクション -->
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-10">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold text-gradient mb-3">
+        <i class="fas fa-question-circle me-2"></i>使い方
+      </h2>
+      <p class="lead">たった4ステップで完了！</p>
+    </div>
+    
+    <div class="row g-4">
+      <!-- ステップ1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm slide-in-left">
+          <div class="card-body text-center p-4">
+            <div class="position-relative mb-4">
+              <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">1</span>
+              </div>
+              <div class="position-absolute top-0 start-100 translate-middle">
+                <i class="fab fa-google text-primary fs-5"></i>
+              </div>
+            </div>
+            <h5 class="fw-bold mb-3">ログイン</h5>
+            <p class="text-muted">Googleアカウントで安全にログインしてカレンダーアクセスを許可</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ステップ2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm slide-in-left" style="animation-delay: 0.1s;">
+          <div class="card-body text-center p-4">
+            <div class="position-relative mb-4">
+              <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">2</span>
+              </div>
+              <div class="position-absolute top-0 start-100 translate-middle">
+                <i class="fas fa-file-pdf text-danger fs-5"></i>
+              </div>
+            </div>
+            <h5 class="fw-bold mb-3">アップロード</h5>
+            <p class="text-muted">シフト表PDFをドラッグ&ドロップまたはファイル選択でアップロード</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ステップ3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm slide-in-right" style="animation-delay: 0.2s;">
+          <div class="card-body text-center p-4">
+            <div class="position-relative mb-4">
+              <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">3</span>
+              </div>
+              <div class="position-absolute top-0 start-100 translate-middle">
+                <i class="fas fa-eye text-info fs-5"></i>
+              </div>
+            </div>
+            <h5 class="fw-bold mb-3">確認</h5>
+            <p class="text-muted">AI解析されたシフト情報を確認し、必要に応じて修正</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ステップ4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm slide-in-right" style="animation-delay: 0.3s;">
+          <div class="card-body text-center p-4">
+            <div class="position-relative mb-4">
+              <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">4</span>
+              </div>
+              <div class="position-absolute top-0 start-100 translate-middle">
+                <i class="fas fa-check text-success fs-5"></i>
+              </div>
+            </div>
+            <h5 class="fw-bold mb-3">完了</h5>
+            <p class="text-muted">Googleカレンダーに自動登録完了！スマホでも確認可能</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 特徴セクション -->
+<div class="row justify-content-center mt-5">
+  <div class="col-lg-10">
+    <div class="card glass-effect border-0 shadow-lg rounded-4">
+      <div class="card-body p-5">
+        <div class="text-center mb-5">
+          <h2 class="display-6 fw-bold text-gradient mb-3">
+            <i class="fas fa-star me-2"></i>主な特徴
+          </h2>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="bg-primary text-white rounded-circle p-3">
+                  <i class="fas fa-lightning-bolt"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="fw-bold">高速処理</h5>
+                <p class="text-muted mb-0">最新のAI技術により、数秒でPDFを解析してシフト情報を抽出</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="bg-success text-white rounded-circle p-3">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="fw-bold">セキュア</h5>
+                <p class="text-muted mb-0">Google OAuth2.0による安全な認証とデータ保護</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="bg-info text-white rounded-circle p-3">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="fw-bold">レスポンシブ</h5>
+                <p class="text-muted mb-0">PC、タブレット、スマートフォンすべてに対応</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="bg-warning text-white rounded-circle p-3">
+                  <i class="fas fa-sync"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h5 class="fw-bold">自動同期</h5>
+                <p class="text-muted mb-0">Googleカレンダーとリアルタイムで同期</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

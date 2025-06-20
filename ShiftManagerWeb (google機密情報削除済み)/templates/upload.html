@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}シフト表アップロード{% endblock %}
+
+{% block extra_css %}
+<style>
+  .upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .upload-area:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+  }
+  .upload-area.highlight {
+    border-color: #28a745;
+    background-color: #f0fff4;
+  }
+  #file-input {
+    display: none;
+  }
+  .file-info {
+    margin-top: 15px;
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow border-0">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="fas fa-upload me-2"></i>シフト表PDFのアップロード</h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>{{ settings.target_name }}</strong> さんのシフト情報を抽出します。
+          名前を変更する場合は<a href="{{ url_for('settings') }}" class="alert-link">設定ページ</a>から変更してください。
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="upload-form">
+          <div class="upload-area" id="drop-area">
+            <i class="fas fa-file-pdf fa-3x text-primary mb-3"></i>
+            <h5>ここにPDFファイルをドラッグ＆ドロップ</h5>
+            <p class="text-muted">または</p>
+            <button type="button" class="btn btn-primary" id="file-select-btn">
+              <i class="fas fa-folder-open me-2"></i>ファイルを選択
+            </button>
+            <input type="file" name="file" id="file-input" accept=".pdf">
+            
+            <div class="file-info mt-3" id="file-info">
+              <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="file-name"></span> が選択されました
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-success btn-lg" id="upload-btn" disabled>
+              <i class="fas fa-upload me-2"></i>アップロードして解析
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="card mt-4 shadow border-0">
+      <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>ヘルプ</h5>
+      </div>
+      <div class="card-body">
+        <h6>対応しているPDF形式</h6>
+        <ul>
+          <li>テーブル形式のシフト表</li>
+          <li>テキスト形式のシフト表</li>
+          <li>日付と時間が含まれているPDF</li>
+        </ul>
+        
+        <h6>ファイル名について</h6>
+        <p>
+          ファイル名に年月が含まれている場合（例: <code>令和5年4月シフト.pdf</code>、<code>2023年04月.pdf</code>、<code>202304.pdf</code>）、
+          その情報を使用してカレンダーに登録します。含まれていない場合はPDFの作成日を使用します。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('file-input');
+    const fileSelectBtn = document.getElementById('file-select-btn');
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const uploadBtn = document.getElementById('upload-btn');
+    
+    // ファイル選択ボタンのクリックイベント
+    fileSelectBtn.addEventListener('click', function() {
+      fileInput.click();
+    });
+    
+    // ファイル選択時の処理
+    fileInput.addEventListener('change', function() {
+      handleFiles(this.files);
+    });
+    
+    // ドラッグ&ドロップイベント
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+      dropArea.classList.add('highlight');
+    }
+    
+    function unhighlight() {
+      dropArea.classList.remove('highlight');
+    }
+    
+    dropArea.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      handleFiles(files);
+    }
+    
+    function handleFiles(files) {
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          fileName.textContent = file.name;
+          fileInfo.style.display = 'block';
+          uploadBtn.disabled = false;
+        } else {
+          alert('PDFファイルを選択してください');
+          fileInput.value = '';
+          fileInfo.style.display = 'none';
+          uploadBtn.disabled = true;
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

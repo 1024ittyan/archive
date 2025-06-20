@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}シフト情報の確認{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>シフト確認</h2>
+    <div class="alert alert-info">
+        <h4>{{ year }}年{{ month }}月のシフト</h4>
+        <p>以下のシフトを登録します。チェックを外すと登録されません。</p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('confirm_shifts') }}">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 10%">選択</th>
+              <th style="width: 20%">日付</th>
+              <th style="width: 40%">時間</th>
+              <th style="width: 30%">イベント情報</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for shift in shifts %}
+              <tr>
+                <td class="text-center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="shift_{{ loop.index0 }}" id="shift_{{ loop.index0 }}" checked>
+                    <label class="form-check-label" for="shift_{{ loop.index0 }}"></label>
+                  </div>
+                </td>
+                <td>{{ year }}年{{ month }}月{{ shift.date }}日</td>
+                <td>{{ shift.time }}</td>
+                <td>
+                  <small class="text-muted">
+                    <i class="fas fa-calendar-alt me-1"></i> {{ settings.event_title }}<br>
+                    <i class="fas fa-map-marker-alt me-1"></i> {{ settings.event_location }}
+                  </small>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('upload_pdf') }}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left me-2"></i>戻る
+        </a>
+        <button type="submit" class="btn btn-success">
+          <i class="fas fa-calendar-plus me-2"></i>選択したシフトをカレンダーに登録
+        </button>
+      </div>
+    </form>
+</div>
+
+<div class="card mt-4 shadow border-0">
+  <div class="card-header bg-light">
+    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>カレンダー登録情報</h5>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <h6>イベント設定</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            イベントタイトル
+            <span class="badge bg-primary rounded-pill">{{ settings.event_title }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            場所
+            <span class="badge bg-secondary rounded-pill">{{ settings.event_location }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            リマインダー
+            <span class="badge bg-info rounded-pill">{{ settings.reminder_minutes }}分前</span>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h6>カレンダー情報</h6>
+        <p>
+          選択したシフトは以下のカレンダーに登録されます：
+        </p>
+        <div class="alert alert-light">
+          <i class="fas fa-calendar me-2"></i>
+          {% if settings.calendar_id == 'primary' %}
+            メインカレンダー
+          {% else %}
+            {{ settings.calendar_id }}
+          {% endif %}
+        </div>
+        <p class="small text-muted">
+          <i class="fas fa-info-circle me-1"></i>
+          カレンダーや他の設定を変更するには、<a href="{{ url_for('settings') }}">設定ページ</a>から変更してください。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
