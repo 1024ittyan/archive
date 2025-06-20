@@ -101,19 +101,6 @@
 - 時系列における政治トピックの変化追跡
 - 機械学習による政治テキスト分析手法の確立
 
-## 実行環境
-
-### 必要な環境
-- Python 3.10以上
-- CUDA対応GPU（推奨）
-- 16GB以上のRAM
-- Google Colab Pro（推奨）
-
-### インストール手順
-```bash
-pip install transformers[ja] torch pandas numpy scikit-learn matplotlib seaborn plotly dash janome wordcloud pyclustering
-```
-
 ## 今後の展開
 
 - より大規模なデータセットでの分析
